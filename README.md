@@ -1,6 +1,12 @@
 # StockMaster - Multi-Tenant Inventory Management System
 
 A comprehensive inventory management system with multi-tenant architecture, location-wise stock tracking, and complete warehouse management capabilities.
+We have Deployed the website 
+```
+https://stockmaster.closedsource.in/login
+```
+
+
 
 ## 🚀 Features
 
