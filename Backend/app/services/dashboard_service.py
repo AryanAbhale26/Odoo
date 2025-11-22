@@ -50,14 +50,35 @@ class DashboardService:
         result = await self.db.products.aggregate(pipeline).to_list(1)
         total_stock_value = result[0]["total"] if result else 0
         
+        # Pending receipts (receipts not yet done)
+        pending_receipts = await self.db.stock_movements.count_documents({
+            "organization_id": org_id,
+            "type": "receipt",
+            "status": {"$in": ["draft", "waiting", "ready"]}
+        })
+        
+        # Pending deliveries (deliveries not yet done)
+        pending_deliveries = await self.db.stock_movements.count_documents({
+            "organization_id": org_id,
+            "type": "delivery",
+            "status": {"$in": ["draft", "waiting", "ready"]}
+        })
+        
+        # Internal transfers (transfers not yet done)
+        internal_transfers = await self.db.stock_movements.count_documents({
+            "organization_id": org_id,
+            "type": "internal",
+            "status": {"$in": ["draft", "waiting", "ready"]}
+        })
+        
         return DashboardKPIs(
             total_products=total_products,
             low_stock_items=low_stock_items,
             out_of_stock_items=out_of_stock_items,
             total_stock_value=total_stock_value,
-            pending_receipts=0,
-            pending_deliveries=0,
-            internal_transfers=0
+            pending_receipts=pending_receipts,
+            pending_deliveries=pending_deliveries,
+            internal_transfers=internal_transfers
         )
 
 dashboard_service = DashboardService()
