@@ -425,16 +425,61 @@ class StockMovementService:
                 product_name = "Unknown Product"
                 product_sku = "N/A"
         
+        # Fetch location names
+        location_from_id = entry.get("location_from")
+        location_to_id = entry.get("location_to")
+        location_from_name = None
+        location_to_name = None
+        display_location = None
+        
+        if location_from_id and ObjectId.is_valid(location_from_id):
+            location_from_doc = await self.db.locations.find_one({"_id": ObjectId(location_from_id)})
+            if location_from_doc:
+                location_from_name = location_from_doc.get("name")
+        
+        if location_to_id and ObjectId.is_valid(location_to_id):
+            location_to_doc = await self.db.locations.find_one({"_id": ObjectId(location_to_id)})
+            if location_to_doc:
+                location_to_name = location_to_doc.get("name")
+        
+        # Format display location based on movement type
+        movement_type = entry["movement_type"]
+        if movement_type == "internal":
+            # For internal transfers, show "From → To"
+            if location_from_name and location_to_name:
+                display_location = f"{location_from_name} → {location_to_name}"
+            elif location_from_name:
+                display_location = location_from_name
+            elif location_to_name:
+                display_location = location_to_name
+        elif movement_type == "receipt":
+            # For receipts, show destination
+            display_location = location_to_name
+        elif movement_type == "delivery":
+            # For deliveries, show source
+            display_location = location_from_name
+        elif movement_type == "adjustment":
+            # For adjustments, show either location
+            display_location = location_to_name or location_from_name
+        
+        # Get quantity change (signed value)
+        quantity_change = entry.get("quantity_change", 0)
+        quantity = abs(quantity_change)  # Unsigned quantity
+        
         return StockLedgerEntry(
             id=str(entry["_id"]),
             product_id=entry["product_id"],
             product_name=product_name,
             product_sku=product_sku,
-            movement_type=entry["movement_type"],
+            movement_type=movement_type,
             reference=entry["reference"],
-            location_from=entry.get("location_from"),
-            location_to=entry.get("location_to"),
-            quantity=entry.get("quantity", entry.get("quantity_change", 0)),
+            location_from=location_from_id,
+            location_to=location_to_id,
+            location_from_name=location_from_name,
+            location_to_name=location_to_name,
+            location=display_location,
+            quantity=quantity,
+            quantity_change=quantity_change,
             balance_after=entry.get("balance_after", 0),
             timestamp=entry.get("timestamp", entry.get("created_at", datetime.utcnow())),
             created_by=entry.get("created_by", "system")

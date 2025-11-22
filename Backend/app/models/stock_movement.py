@@ -104,7 +104,11 @@ class StockLedgerEntry(BaseModel):
     reference: str
     location_from: Optional[str] = None
     location_to: Optional[str] = None
+    location_from_name: Optional[str] = None
+    location_to_name: Optional[str] = None
+    location: Optional[str] = None  # Display location (formatted for UI)
     quantity: int
+    quantity_change: int  # Signed quantity change (+/-)
     balance_after: int
     timestamp: datetime
     created_by: str
