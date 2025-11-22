@@ -158,7 +158,7 @@ const Dashboard = () => {
 
               <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/transfers')}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Internal Transfers</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Internal Transfers Scheduled</h3>
                   <BarChart3 className="h-6 w-6 text-gray-400" />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">{kpis?.internal_transfers || 0}</p>
