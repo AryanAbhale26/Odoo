@@ -242,6 +242,17 @@ const Adjustments = () => {
                     required
                     min="0"
                     step="1"
+                    onKeyDown={(e) => {
+                      if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedData = e.clipboardData.getData('text');
+                      if (!/^\d+$/.test(pastedData)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Physical count"
                   />

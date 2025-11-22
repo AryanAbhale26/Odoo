@@ -274,10 +274,24 @@ const ReceiptForm = () => {
                         <div>
                           <input
                             type="number"
-                            min="0.01"
-                            step="0.01"
+                            min="1"
+                            step="1"
                             value={line.quantity}
-                            onChange={(e) => updateLine(index, 'quantity', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value) || 0;
+                              updateLine(index, 'quantity', Math.max(0, value));
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {
+                                e.preventDefault();
+                              }
+                            }}
+                            onPaste={(e) => {
+                              const pastedData = e.clipboardData.getData('text');
+                              if (!/^\d+$/.test(pastedData)) {
+                                e.preventDefault();
+                              }
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Quantity"
                           />
