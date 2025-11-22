@@ -238,9 +238,15 @@ const Adjustments = () => {
                   <input
                     type="number"
                     value={formData.counted_quantity}
-                    onChange={(e) => setFormData({ ...formData, counted_quantity: parseInt(e.target.value) || 0 })}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 0;
+                      if (value >= 0 && value <= 1000000) {
+                        setFormData({ ...formData, counted_quantity: value });
+                      }
+                    }}
                     required
                     min="0"
+                    max="1000000"
                     step="1"
                     onKeyDown={(e) => {
                       if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {

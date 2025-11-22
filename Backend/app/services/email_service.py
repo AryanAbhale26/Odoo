@@ -2,6 +2,7 @@ import aiosmtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
+import ssl
 
 async def send_email(to_email: str, subject: str, body: str):
     """Send an email using SMTP"""
@@ -14,6 +15,9 @@ async def send_email(to_email: str, subject: str, body: str):
         html_part = MIMEText(body, "html")
         message.attach(html_part)
         
+        # Create unverified SSL context
+        context = ssl._create_unverified_context()
+        
         await aiosmtplib.send(
             message,
             hostname=settings.SMTP_HOST,
@@ -21,6 +25,7 @@ async def send_email(to_email: str, subject: str, body: str):
             username=settings.SMTP_USER,
             password=settings.SMTP_PASSWORD,
             use_tls=True,
+            tls_context=context,  # Add this line
         )
         return True
     except Exception as e:

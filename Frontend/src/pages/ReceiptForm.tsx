@@ -275,11 +275,14 @@ const ReceiptForm = () => {
                           <input
                             type="number"
                             min="1"
+                            max="100000"
                             step="1"
                             value={line.quantity}
                             onChange={(e) => {
                               const value = parseInt(e.target.value) || 0;
-                              updateLine(index, 'quantity', Math.max(0, value));
+                              if (value >= 1 && value <= 100000) {
+                                updateLine(index, 'quantity', value);
+                              }
                             }}
                             onKeyDown={(e) => {
                               if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {

@@ -252,9 +252,15 @@ const ProductForm = () => {
                     type="number"
                     name="reorder_level"
                     min="0"
+                    max="1000000"
                     step="1"
                     value={formData.reorder_level}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 0;
+                      if (value >= 0 && value <= 1000000) {
+                        handleChange(e);
+                      }
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {
                         e.preventDefault();
@@ -321,9 +327,15 @@ const ProductForm = () => {
                         type="number"
                         name="initial_stock"
                         min="0"
+                        max="1000000"
                         step="1"
                         value={formData.initial_stock}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value) || 0;
+                          if (value >= 0 && value <= 1000000) {
+                            handleChange(e);
+                          }
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === '.' || e.key === '-' || e.key === 'e' || e.key === 'E') {
                             e.preventDefault();
